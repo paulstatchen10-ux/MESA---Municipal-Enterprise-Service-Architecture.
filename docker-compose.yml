@@ -1,0 +1,90 @@
+networks:
+  boink_internal:
+    driver: bridge
+    internal: false
+  depin_mesh:
+    driver: bridge
+
+services:
+  mariadb:
+    image: mariadb:10.11
+    container_name: sovereign_db
+    restart: unless-stopped
+    networks:
+      - boink_internal
+    volumes:
+      - ./data/mysql_data:/var/lib/mysql
+    environment:
+      - MARIADB_DATABASE=${MARIADB_DATABASE:-glpi_db}
+      - MARIADB_USER=${GLPI_DB_USER:-glpi_srv}
+      - MARIADB_PASSWORD=${GLPI_DB_PASSWORD:-glpi_internal_db_pass_2026}
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD:-sovereign_root_secure_2026}
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+
+  glpi:
+    image: diouxx/glpi:latest
+    container_name: sovereign_glpi
+    restart: unless-stopped
+    networks:
+      - boink_internal
+    ports:
+      - "8080:80"
+    volumes:
+      - ./data/glpi_files:/var/www/html/files
+    environment:
+      - TIMEZONE=America/Los_Angeles
+    depends_on:
+      - mariadb
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 1.5G
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: sovereign_ollama
+    restart: unless-stopped
+    networks:
+      - boink_internal
+      - depin_mesh
+    volumes:
+      - ./data/ollama_models:/root/.ollama
+    environment:
+      - OLLAMA_KV_CACHE_TYPE=q8_0
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+
+  bridge_controller:
+    build: ./bridge
+    container_name: sovereign_bridge
+    restart: unless-stopped
+    networks:
+      - boink_internal
+      - depin_mesh
+    volumes:
+      - ./bridge:/app
+    environment:
+      - OLLAMA_HOST=http://sovereign_ollama:11434
+      - GLPI_TARGET=http://sovereign_glpi/apirest.php
+      - NODE_IDENTITY=${NODE_ID:-sov_node_santacruz_01}
+      - GLPI_APP_TOKEN=${GLPI_APP_TOKEN:-}
+      - GLPI_USER_TOKEN=${GLPI_USER_TOKEN:-}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-phi3:mini}
+    depends_on:
+      - glpi
+      - ollama
+    ports:
+      - "8000:8000"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
