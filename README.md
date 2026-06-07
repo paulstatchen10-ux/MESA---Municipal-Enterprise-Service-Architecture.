@@ -320,9 +320,19 @@ Santa Cruz, CA
 - Integration with state systems while maintaining local data sovereignty
 - Open protocol so any city or county can join the network
 
+## MESA Architecture: Educational & Civic Deployment
+
+Designed explicitly for deployment on lightweight, isolated hardware (e.g., Chromebook Linux containers), this architecture provides a zero-cost, localized municipal sandbox.
+
+* **Civic Flowchart Integration:** Students and voters can ingest public documents (city ordinances, constitutional text, budgets) into the localized storage.
+* **Automated Triage & Auditing:** Utilizing a fallback array of lightweight models (Gemma, Phi-3, Qwen), the system dynamically routes user queries to audit municipal processes against constitutional frameworks.
+* **Zero-Dependency:** Runs entirely offline, ensuring absolute data privacy and sovereign operation without cloud API costs or connectivity requirements.
+
 ### The Vision
 MESA is the foundation. The goal is a Civic Operating System -
 a sovereign, AI-powered platform where government is transparent,
 efficient, and accessible to every citizen through any browser on any device.
 
 Built on love. Free forever.
+
+
