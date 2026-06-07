@@ -1,7 +1,3 @@
-# MESA: Municipal Enterprise Service Architecture
-A sovereign, open-source ITSM/ESM platform for governments that own their future.
-License: Apache 2.0
-Built in Santa Cruz, CA by Paul Statchen
 # MESA
 ## Municipal Enterprise Service Architecture
 
@@ -59,6 +55,298 @@ MESA is a five-pillar sovereign service management platform designed specificall
 - Cost ledger per project
 - API handshake layer for external accounting systems (QuickBooks, municipal finance software)
 - Built on GLPI's native project module
+- Every project tied to financial audit trail
+
+### Pillar 5 - Financial Audit Layer
+- Transparent, tamper-evident public spending ledger
+- Every ticket, project, and asset has cost attached
+- Auditable by the public
+- No data leaves county hardware
+- Designed for the era of government transparency demands
+
+---
+
+## AI Architecture - Two Sovereign Tiers
+
+### Tier 1 - Sovereign Local AI (Always On)
+- Ollama running on county-owned hardware
+- Zero telemetry - no data leaves the building
+- Automatic ticket triage and categorization
+- Priority assignment
+- Resolution suggestions from knowledge base
+- Works with no internet connection
+- Models: Phi-3 Mini, Gemma 2B (runs on standard laptops)
+
+### Tier 2 - Cloud AI Augmentation (Optional)
+- Claude (Anthropic), Gemini (Google), GPT (OpenAI) available as optional connectors
+- Explicitly opted into - never required
+- Used for heavy lifting when needed
+- Sovereign tier backs up cloud tier always
+- If internet fails or vendor raises prices - MESA still works
+
+The county controls the AI. The AI does not control the county.
+
+---
+
+## Technical Stack
+
+| Component | Technology | Purpose |
+|-----------|-----------|---------|
+| ITSM/ESM Core | GLPI (GPL licensed) | System of record, ticketing, assets, projects |
+| Database | MariaDB 10.11 | Sovereign relational storage |
+| Local AI | Ollama + Phi-3 Mini | Zero-telemetry inference engine |
+| Bridge Layer | Python FastAPI | Logic, triage, API translation |
+| Network | Docker + custom bridge | Air-gapped sovereign data network |
+| Mesh | DePIN architecture | Federated node network across county fleet |
+
+---
+
+## Network Architecture
+
+```
+┌─────────────────────────────────────────────────┐
+│           BOINK INTERNAL NETWORK                │
+│        (air-gapped, no internet routing)        │
+│                                                 │
+│  ┌──────────┐  ┌──────────┐  ┌──────────────┐  │
+│  │ MariaDB  │◄─│   GLPI   │◄─│    Bridge    │  │
+│  │(storage) │  │(ITSM/ESM)│  │ Controller  │  │
+│  └──────────┘  └──────────┘  └──────┬───────┘  │
+│                                     │           │
+│                          ┌──────────┘           │
+│                          │  ┌──────────┐        │
+│                          └─►│  Ollama  │        │
+│                             │(local AI)│        │
+│                             └──────────┘        │
+└─────────────────────────────────────────────────┘
+                    │
+          ┌─────────▼──────────┐
+          │   DePIN Mesh Net   │
+          │ (federated nodes)  │
+          │                    │
+          │  Every county      │
+          │  computer = node   │
+          └────────────────────┘
+```
+
+---
+
+## Hardware Requirements
+
+Designed to run on what governments already own:
+
+| Component | Minimum |
+|-----------|---------|
+| RAM | 8GB |
+| Storage | 20GB free |
+| OS | Linux (including Chromebook Crostini) |
+| GPU | Not required - CPU-only inference |
+| Network | Local only - no cloud dependency |
+
+---
+
+## The Distributed County Vision
+
+Every computer the county already owns - laptops, desktops, vehicles - can become a MESA node.
+
+Combined idle compute across a county fleet creates significant processing power with zero additional hardware cost. When devices sleep at night they contribute to the mesh. The math is significant.
+
+This is BOINC-style distributed computing applied to sovereign municipal infrastructure.
+
+---
+
+## Quick Start
+
+```bash
+# 1. Clone
+git clone https://github.com/paulstatchen10-ux/MESA---Municipal-Enterprise-Service-Architecture.git
+cd MESA---Municipal-Enterprise-Service-Architecture
+
+# 2. Configure
+cp .env.template .env
+nano .env  # Set your passwords
+
+# 3. Create data directories
+mkdir -p data/mysql_data data/glpi_files data/ollama_models
+
+# 4. Launch
+docker compose up -d
+
+# 5. Pull AI model (first time only - ~2.3GB)
+docker exec sovereign_ollama ollama pull phi3:mini
+
+# 6. Access
+# GLPI Dashboard: http://localhost:8080
+# Bridge API:     http://localhost:8000
+# API Docs:       http://localhost:8000/docs
+
+# Default GLPI login: glpi / glpi
+# CHANGE THIS IMMEDIATELY after first login
+```
+
+---
+
+## Compliance & Standards
+
+MESA is designed to align with:
+
+- **NIST Cybersecurity Framework 2.0** - Govern, Identify, Protect, Detect, Respond, Recover
+- **NIST SP 800-53** - Security and privacy controls
+- **ITIL 4** - Service management vocabulary and workflows
+- **California CDT requirements** - Stable, secure, fault-tolerant, scalable, interoperable
+- **Apache 2.0** - Patent-protected open source license
+
+MESA achieves compliance through architecture, not vendor selection.
+
+---
+
+## The Economic Argument
+
+| | TeamDynamix | MESA |
+|--|-------------|------|
+| Year 1 | $291,824 | $0 |
+| Year 5 | $1,459,120+ | $0 |
+| Year 10 | $2,918,240+ | $0 |
+| Data ownership | Vendor | You |
+| Exit cost | High | None |
+| Works offline | No | Yes |
+| AI included | Subscription | Built in |
+
+---
+
+## Current Status
+
+Active development. Core GLPI stack operational and demonstrated on consumer Chromebook hardware. Bridge AI layer in active development.
+
+**Demonstrated capabilities (June 2026):**
+- Full GLPI ITSM deployment on Chromebook
+- Sovereign air-gapped network architecture
+- Local Ollama AI inference
+- Zero subscription cost
+- Complete data sovereignty
+
+**In development:**
+- Bridge API stabilization
+- Financial audit layer
+- Energy & utilities ontology integration
+- DePIN mesh federation
+- QuickBooks API handshake
+
+---
+
+## The Architecture: Micro to Macro
+
+1. **The Kernel (The Root):** A self-contained AI-managed core. MESA operates on consumer-grade hardware (Chromebooks) using containerized abstraction, allowing it to run anywhere Linux lives.
+
+2. **The Nervous System (The Bridge):** The logic layer that translates intent into action. The triage bridge (API-first) is the mandatory interface between the raw LLM and the ITSM/ESM system. Intelligence is orchestrative.
+
+3. **The State Layer (Persistence):** True sovereignty requires absolute control over data. The system manages the separation between transient compute and persistent state - model weights and audit trails are never lost, even if containers are destroyed.
+
+4. **The Interface (The Voice):** Voice-first as the primary I/O, reducing the friction of traditional GUI-based service management. Any microphone on any device becomes an entry point.
+
+5. **The Network (The Grass):** Decentralized edge nodes collaborating to solve macro-scale problems. Individual devices are blades of grass. Together they are a field with the combined intelligence of a supercomputer.
+
+---
+
+## Lessons From the Field (Crostini Reality)
+
+Building MESA on a Chromebook taught us things no theoretical manifesto could. These are real principles earned in the trenches:
+
+**Hardware Abstraction is Real.** MESA runs on ChromeOS, Linux, Windows subsystems - anything that supports containerization. The host OS is a thin delivery vehicle. The sovereign kernel doesn't care what's underneath.
+
+**State-Awareness is Non-Negotiable.** A sovereign system must distinguish between the Disposable Compute Layer (containerized AI) and the Immutable State Layer (database, model weights, audit logs). These must never be conflated. Data lives on hardware you own. Compute can be rebuilt anytime.
+
+**The Bridge IS the Intelligence.** The AI model alone is not enough. The logic that connects human intent to infrastructure action - the bridge API - is where the real intelligence lives. A sovereign OS without a bridge is just a database.
+
+**Port binding in Baguette mode requires socat.** ChromeOS's containerless Crostini mode breaks standard Docker port forwarding. The workaround: get the container's internal IP via docker inspect, then route through socat. Document your workarounds - they become the installation guide for the next person.
+
+---
+
+## Future Roadmap
+
+### Phase 2 - Civic Intelligence Layer
+- Legal AI advisor for basic municipal compliance questions
+- Automatic CEQA environmental impact pre-screening
+- Plain language translation of government processes for citizens
+- Civic flowchart generator - visual map of how government decisions work
+
+### Phase 3 - Financial Sovereignty
+- Real-time budget tracking tied to every ticket and project
+- Public-facing audit dashboard - transparent spending visible to all citizens
+- QuickBooks and Tyler Technologies API handshake for contractor payments
+- Pension liability modeling and optimization
+- Ballot measure cost-impact analysis
+
+### Phase 4 - Distributed County Compute (DePIN Full Build)
+- Every county device becomes a MESA node when idle
+- Energy-aware scheduler - heavy AI tasks run on renewable surplus
+- BOINC-style volunteer compute across the municipal fleet
+- Government vehicles as mobile edge nodes
+- Self-healing infrastructure - AI monitors and repairs its own stack
+
+### Phase 5 - Civic Operating System
+- Full replacement layer for fragmented municipal software
+- One interface for citizens to access all government services
+- AI that understands local law, zoning, environmental codes
+- Integration with state systems while maintaining local data sovereignty
+- Open protocol so any city or county can join the network
+
+### The Vision
+MESA is the foundation. The goal is a Civic Operating System - a sovereign, AI-powered platform where government is transparent, efficient, and accessible to every citizen through any browser on any device.
+
+Built on love. Free forever.
+
+---
+
+## For Other Governments
+
+This is yours. Fork it. Deploy it. Improve it.
+
+Apache 2.0 means you can use it, modify it, and deploy it commercially. You cannot patent it against the commons.
+
+If you improve it, consider contributing back so every municipality benefits.
+
+---
+
+## Contributing
+
+Pull requests welcome. Issues welcome.
+
+Especially from: municipal IT staff, civic technologists, UCSC students, open source developers, and anyone who believes public infrastructure should be publicly owned.
+
+---
+
+## Built With
+
+This project was designed and built through human-AI collaboration:
+
+- **Paul Statchen** - Lead Systems Architect, Civic Scientist, Santa Cruz CA
+- **Google Gemini** - Architecture design and sprint planning
+- **Anthropic Claude** - Code generation and implementation
+- **GLPI Community** - Core ITSM platform (GPL)
+- **Ollama** - Local AI inference engine
+
+Proof that sovereign alternatives to proprietary subscriptions can be built quickly with publicly available tools.
+
+---
+
+## License
+
+Apache 2.0 - See LICENSE file.
+
+Copyright 2026 Paul Statchen
+
+**Free for every government on Earth. Free forever.**
+
+---
+
+## Contact
+
+Paul Statchen
+GitHub: @paulstatchen10-ux
+Santa Cruz, CA
+
+*"Refining common dust into a shield for my neighbor."*- Built on GLPI's native project module
 - Every project tied to financial audit trail
 
 ### Pillar 5 - Financial Audit Layer
