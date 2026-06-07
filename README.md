@@ -1,0 +1,2 @@
+# MESA---Municipal-Enterprise-Service-Architecture.
+ ITSM, ESM, Energy &amp; Utilities, Project Management, and Financial Audit.Sovereign, open-source ITSM/ESM platform for municipal governments. Built as a free alternative to $291K/year proprietary subscriptions. Runs on hardware you already own. Your data never leaves your network. ITIL 4 compliant. AI-powered. Apache 2.0. Built in Santa Cruz, CA.
